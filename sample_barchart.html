@@ -153,7 +153,6 @@
         
             // based on the data bound to each svg rect,
             // change its x, y, width, height accordingly
-            console.log(data);
             d3.selectAll('.bar')
                 .attr('x', function(d) {
                     return time_scale(d['year']);

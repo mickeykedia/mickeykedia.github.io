@@ -31,9 +31,9 @@
 			}
 
 			.brush .extent {
-				stroke: #fff;
-				fill-opacity: .125;
-				shape-rendering: crispEdges;
+			  stroke: #fff;
+			  fill-opacity: .125;
+			  shape-rendering: crispEdges;
 			}
 		    .bar {
 		    	opacity: 0.9;
@@ -82,12 +82,17 @@
 			    xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
 			    yAxis = d3.svg.axis().scale(y).orient("left");
 
-
+			// The selection which is being passed as an 
+			// argument to brush() here is passed through 
+			// the .call method we use to call this function later
 			var brush = d3.svg.brush()
 			    .x(x2)
 			    .on("brush", brushed);
 
-
+			// SVG Generators are functions of data
+			// When they are called as attributes for a 
+			// selection then whatever data is bound to 
+			// that selection is passed onto these generators
 			var area = d3.svg.line()
 			    .interpolate("linear")
 			    .x(function(d) { 
@@ -145,6 +150,9 @@
 				focus.append("path")
 					.datum(data)
 					.attr("class", "area")
+					// What does this really mean ? Does it call 
+					// the area element for all data points ? 
+
 					.attr("d", area);
 
 				focus.append("g")
@@ -154,6 +162,8 @@
 
 				focus.append("g")
 					.attr("class", "y axis")
+					// .call is a fancy way of passing the 
+					// selection to the function specified
 					.call(yAxis);
 
 				context.append("path")
@@ -164,10 +174,14 @@
 				context.append("g")
 					.attr("class", "x axis")
 					.attr("transform", "translate(0," + height2 + ")")
+					// .call is a fancy way of passing the 
+					// selection to the function specified
 					.call(xAxis2);
 
 				context.append("g")
 					.attr("class", "x brush")
+					// .call is a fancy way of passing the 
+					// selection to the function specified
 					.call(brush)
 					.selectAll("rect")
 						.attr("y", -6)
@@ -176,16 +190,20 @@
 
 			function brushed() {
 				x.domain(brush.empty() ? x2.domain() : brush.extent());
+				// so focus.select(".area") has data bound to it and hence 
+				// when the .attr is passed the area generator 
+				// the data bound to the selection is passed to it 
+				// Just how generators work 
+				// The bound data is also available as a
+				// __data__ attribute in the selection 
+				// and that is how you could go about doing your own thing with the 
+				// data
 				focus.select(".area").attr("d", area);
+
 				focus.select(".x.axis").call(xAxis);
+				console.log(focus.select(".area"));
 			}
 
-			function type(d) {
-				console.log(parseDate(d[0]['match/startdate']));
-				d.date = parseDate(d['match/startdate']);
-				d.runs = d['batsman/runs'];
-				return d;
-			}
 
 	    </script>
 	</body>
