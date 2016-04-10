@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <meta name="description" content="">
+	    <meta name="author" content="">
+
+	    <!-- Bootstrap Core CSS -->
+	    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	    <!-- Custom CSS -->
+	    <style>
+	    	svg {
+			  font: 10px sans-serif;
+			}
+
+			.area {
+			  fill: none;
+			  stroke: steelblue;
+			  stroke-width: 3;
+			  clip-path: url(#clip);
+			}
+
+			.axis path,
+			.axis line {
+			  fill: none;
+			  stroke: #000;
+			  shape-rendering: crispEdges;
+			}
+
+			.brush .extent {
+				stroke: #fff;
+				fill-opacity: .125;
+				shape-rendering: crispEdges;
+			}
+		    .bar {
+		    	opacity: 0.9;
+		        stroke: none;
+		        fill: steelblue;
+		     }
+
+
+	    </style>
+	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	    <!--[if lt IE 9]>
+	        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	    <![endif]-->
+	</head>
+	<body>
+		<!-- D3js CDN -->
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+        <div class="container">
+        	<!-- All html elements go here. You can have multiple containers, and look -->
+        	<!-- up class container-fluid if you want the container to span the entire page -->
+
+        </div>
+
+	    <!-- jQuery Version 1.12.3 -->
+        <script   src="https://code.jquery.com/jquery-1.12.3.min.js"   integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	    <script>
+	    	var margin = {top: 10, right: 10, bottom: 100, left: 40},
+			    margin2 = {top: 430, right: 10, bottom: 20, left: 40},
+			    width = 960 - margin.left - margin.right,
+			    height = 500 - margin.top - margin.bottom,
+			    height2 = 500 - margin2.top - margin2.bottom;
+
+			// Sample date time format 1989-12-18T00:00:00.000Z
+			var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
+
+			var x = d3.time.scale().range([0, width]),
+			    x2 = d3.time.scale().range([0, width]),
+			    y = d3.scale.linear().range([height, 0]),
+			    y2 = d3.scale.linear().range([height2, 0]);
+
+			var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+			    xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
+			    yAxis = d3.svg.axis().scale(y).orient("left");
+
+
+			var brush = d3.svg.brush()
+			    .x(x2)
+			    .on("brush", brushed);
+
+
+			var area = d3.svg.line()
+			    .interpolate("linear")
+			    .x(function(d) { 
+			    	console.log(d['match/startdate']);
+			    	console.log(x(parseDate(d['match/startdate'])));
+			    	return x(parseDate(d['match/startdate'])); })
+			    .y(function(d) { 
+			    	console.log(d['batsman/runs']);
+			    	console.log(y(d['batsman/runs']));
+			    	return y(d['batsman/runs']); 
+			    });
+
+			var area2 = d3.svg.line()
+			    .interpolate("linear")
+			    .x(function(d) { 
+			    	return x2(parseDate(d['match/startdate'])); 
+			    })
+			    .y(function(d) { 
+			    	return y2(d['batsman/runs']); 
+			    });
+
+			var svg = d3.select("body").append("svg")
+			    .attr("width", width + margin.left + margin.right)
+			    .attr("height", height + margin.top + margin.bottom);
+
+			svg.append("defs").append("clipPath")
+			   .attr("id", "clip")
+			   .append("rect")
+		       .attr("width", width)
+		       .attr("height", height);
+
+		    var focus = svg.append("g")
+			    .attr("class", "focus")
+			    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+			var context = svg.append("g")
+			    .attr("class", "context")
+			    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+			d3.json("tendulkar_35320_odi.json", function(error, data) {
+
+				x.domain(d3.extent(data.map(function(d) { 
+					return parseDate(d['match/startdate']); 
+
+				})));
+				y.domain([0, d3.max(data.map(function(d) { 
+					return d['batsman/runs']; 
+				}))]);
+
+				console.log(x.domain());
+				x2.domain(x.domain());
+				y2.domain(y.domain());
+
+				focus.append("path")
+					.datum(data)
+					.attr("class", "area")
+					.attr("d", area);
+
+				focus.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xAxis);
+
+				focus.append("g")
+					.attr("class", "y axis")
+					.call(yAxis);
+
+				context.append("path")
+					.datum(data)
+					.attr("class", "area")
+					.attr("d", area2);
+
+				context.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(0," + height2 + ")")
+					.call(xAxis2);
+
+				context.append("g")
+					.attr("class", "x brush")
+					.call(brush)
+					.selectAll("rect")
+						.attr("y", -6)
+						.attr("height", height2 + 7);
+			});
+
+			function brushed() {
+				x.domain(brush.empty() ? x2.domain() : brush.extent());
+				focus.select(".area").attr("d", area);
+				focus.select(".x.axis").call(xAxis);
+			}
+
+			function type(d) {
+				console.log(parseDate(d[0]['match/startdate']));
+				d.date = parseDate(d['match/startdate']);
+				d.runs = d['batsman/runs'];
+				return d;
+			}
+
+	    </script>
+	</body>
+</html>

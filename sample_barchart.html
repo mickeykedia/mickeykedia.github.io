@@ -36,17 +36,38 @@
         stroke: none;
         fill: steelblue;
       }
+
+      .bar:hover {
+        fill: orangered ;
+      }
+      .d3-tip {
+        line-height: 1;
+        font-weight: bold;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+      }
+
     </style>
 
     <script type="text/javascript">
+      function convert_to_usd(data){
+        conversion_rate = 67.0;
+        for (var i = 0; i < data.length; i++) {
+          // Converting to Billions of Rupees from Crores and then converting
+          // to dollars
+          data[i]['data'] = (data[i]['data'])/(conversion_rate*100);
+        };
+        return data;
+      }
       // https://github.com/mbostock/d3/wiki/Time-Formatting
       //format = d3.time.format("%Y-%m");
       function draw(data) {
           "use strict";
-          debugger;
           // set margins according to Mike Bostock's margin conventions
           // http://bl.ocks.org/mbostock/3019563
-          var margin = {top: 25, right: 40, bottom: 100, left: 75};
+          var margin = {top: 25, right: 40, bottom: 100, left: 175};
           // set height and width of chart
           var width = 960 - margin.left - margin.right,
               height = 500 - margin.top - margin.bottom;
@@ -72,6 +93,7 @@
 
           // Choose data for GDP Figures
           data = data[field];
+          data = convert_to_usd(data);
           // bind our data to svg rects for the bar plot
           svg.selectAll(".bar")
               .data(data)
@@ -94,7 +116,8 @@
             // Create y-axis scale mapping price -> pixels
             var measure_scale = d3.scale.linear()
                 .range([height, 0])
-                .domain([0, max_y]);
+                .domain([0, max_y*1.1]);
+
             // Create D3 axis object from time_scale for the x-axis
             var time_axis = d3.svg.axis()
                 .scale(time_scale);
@@ -102,7 +125,8 @@
             // Create D3 axis object from measure_scale for the y-axis
             var measure_axis = d3.svg.axis()
                 .scale(measure_scale)
-                .orient("left");
+                .orient("left")
+                .ticks(10);
 
             // Append SVG to page corresponding to the D3 x-axis
             svg.append('g')
@@ -119,9 +143,9 @@
             var y_label = d3.select(".y.axis")
                 .append("text")
                 .attr('class', 'label')
-                .text("Rs. (Crores/10 Millions)")
-            		.style('font-size', '1.2em')
-                .attr("transform", "rotate(-90)");
+                .text("USD (billions)")
+            		.style('font-size', '2.2em')
+                .attr("transform", "rotate(-90), translate(0, -70)");
       
       			// center y axis label
       			y_label.attr("x", -(height / 2)).attr('y', -40)
@@ -142,8 +166,13 @@
                 })
                 .attr('height', function(d) {
                     return height - measure_scale(+d[data_field]);
+                })
+                .append("svg:title")
+                .text(function(d){
+                  return d['data'];
                 });
         };
+
       </script>
   </head>
   <body>
