@@ -75,6 +75,8 @@
 
 			var x = d3.time.scale().range([0, width]),
 			    x2 = d3.time.scale().range([0, width]),
+		//	var x = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
+		//	    x2 = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
 			    y = d3.scale.linear().range([height, 0]),
 			    y2 = d3.scale.linear().range([height2, 0]);
 
@@ -89,30 +91,40 @@
 			    .x(x2)
 			    .on("brush", brushed);
 
-			// SVG Generators are functions of data
-			// When they are called as attributes for a 
-			// selection then whatever data is bound to 
-			// that selection is passed onto these generators
-			var area = d3.svg.line()
-			    .interpolate("linear")
-			    .x(function(d) { 
-			    	console.log(d['match/startdate']);
-			    	console.log(x(parseDate(d['match/startdate'])));
-			    	return x(parseDate(d['match/startdate'])); })
-			    .y(function(d) { 
-			    	console.log(d['batsman/runs']);
-			    	console.log(y(d['batsman/runs']));
-			    	return y(d['batsman/runs']); 
-			    });
+			// this function is called by a .call function
+			// which passes the selection into the function
+			// as 'this'. That's why the function
+			// is adding attributes to 'this'
+			var bars = function(){
+				this.attr('x', function(d){
+			    	return x(parseDate(d['match/startdate']));
+			   	})
+				.attr('width', function(d){
+					return 2;
+				})
+				.attr('y', function(d){
+					return y(d['batsman/runs']);
+				})
+				.attr('height', function(d){
+			    	return height - y(d['batsman/runs']); 
 
-			var area2 = d3.svg.line()
-			    .interpolate("linear")
-			    .x(function(d) { 
-			    	return x2(parseDate(d['match/startdate'])); 
-			    })
-			    .y(function(d) { 
-			    	return y2(d['batsman/runs']); 
-			    });
+				});
+			};
+			var bars2 = function(){
+				this.attr('x', function(d){
+			    	return x2(parseDate(d['match/startdate']));
+			   	})
+				.attr('width', function(d){
+					return 2;
+				})
+				.attr('y', function(d){
+					return y2(d['batsman/runs']);
+				})
+				.attr('height', function(d){
+			    	return height2 - y2(d['batsman/runs']); 
+
+				});
+			};
 
 			var svg = d3.select("body").append("svg")
 			    .attr("width", width + margin.left + margin.right)
@@ -135,25 +147,33 @@
 
 			d3.json("tendulkar_35320_odi.json", function(error, data) {
 
+				
 				x.domain(d3.extent(data.map(function(d) { 
 					return parseDate(d['match/startdate']); 
 
 				})));
+				/*	
+
+				x.domain(d3.map(data, function(d){
+					return parseDate(d['match/startdate']);
+				}));
+				*/
 				y.domain([0, d3.max(data.map(function(d) { 
 					return d['batsman/runs']; 
 				}))]);
 
-				console.log(x.domain());
 				x2.domain(x.domain());
+				/*
+				ordinalx2.domain(ordinalx.domain());
+				*/
 				y2.domain(y.domain());
 
-				focus.append("path")
-					.datum(data)
-					.attr("class", "area")
-					// What does this really mean ? Does it call 
-					// the area element for all data points ? 
-
-					.attr("d", area);
+				focus.selectAll('.bar')
+					.data(data)
+						.enter()
+						.append("rect")
+						.attr("class", "bar")
+						.call(bars); 
 
 				focus.append("g")
 					.attr("class", "x axis")
@@ -166,10 +186,12 @@
 					// selection to the function specified
 					.call(yAxis);
 
-				context.append("path")
-					.datum(data)
-					.attr("class", "area")
-					.attr("d", area2);
+				context.selectAll('.bar')
+					.data(data)
+						.enter()
+						.append("rect")
+						.attr("class", "bar")
+						.call(bars2); 
 
 				context.append("g")
 					.attr("class", "x axis")
@@ -198,10 +220,9 @@
 				// __data__ attribute in the selection 
 				// and that is how you could go about doing your own thing with the 
 				// data
-				focus.select(".area").attr("d", area);
+				focus.selectAll(".bar").call(bars);
 
 				focus.select(".x.axis").call(xAxis);
-				console.log(focus.select(".area"));
 			}
 
 
