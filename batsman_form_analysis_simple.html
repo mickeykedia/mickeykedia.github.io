@@ -140,11 +140,11 @@
 					if(d['notouts'] > 0){
 						notout_marker = "*"
 					}
-					return "<b>"+d["batsman/runs"]+" ("+d["batsman/ballsfaced"]+" balls)"+notout_marker + "</b> vs "+d['opposition/short_name'];
+					return "<b>"+d["batsman/runs"]+" ("+d["batsman/ballsfaced"]+" balls)"+notout_marker + "</b>, Strike Rate: "+Math.round(d['strike_rate']*1000)/10;
 
 				})
 				.attr("data-content", function(d){
-					return "<p>"+dateFormat(parseDate(d['match/startdate']))+"</p><p><b>Series</b>: "+d['series/name']+"</p><p><b>Location</b>: "+d['ground/small_name'] + "</p>" ;
+					return  "<p> vs "+d['opposition/short_name']+" ("+dateFormat(parseDate(d['match/startdate']))+")</p><p><b>Series</b>: "+d['series/name']+"</p><p><b>Location</b>: "+d['ground/small_name'] + "</p>" ;
 				})
 			
 				;
@@ -267,7 +267,13 @@
 				// similar to xAxis2 with no tick marks we can get a grid for the selector ! 
 				context.append("g")
 					.attr("class", "x grid")
-					.attr("transform", "translate(0, " +height2+")");
+					.attr("transform", "translate(0, " +height2+")")
+					.call(d3.svg.axis()
+						.scale(x2)
+						.orient("bottom")
+						.ticks(d3.time.years)
+						.tickSize(-height2)
+						.tickFormat(""));
 
 
 				context.append("g")
