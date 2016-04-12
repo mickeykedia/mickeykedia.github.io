@@ -71,7 +71,7 @@
 			    	<h3 class="panel-title">Batsman: Sachin Tendulkar</h3>
 				</div>
 				<div class="panel-body">
-		        	<span class="label label-default" id="from_date">From Date:</span> <span>  TO  </span>
+		        	<span class="label label-default" id="from_date">From Date:</span> <span>  To  </span>
 		        	<span class="label label-default" id="to_date">To Date:</span>
 				</div>
 			</div>
@@ -95,12 +95,13 @@
 			// Sample date time format 1989-12-18T00:00:00.000Z
 			var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
+			var dateFormat = d3.time.format("%d %b, %Y");
 
 			//var x = d3.time.scale().range([0, width]),
 			//    x2 = d3.time.scale().range([0, width]),
 			var x = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
 			    y = d3.scale.linear().range([height, 0]), 
-			    colour = d3.scale.linear().range(["lightblue", "blue"]);
+			    colour = d3.scale.linear().range(["lightblue","blue" ]);
 
 			var x2 = d3.time.scale().range([0, width]);
 
@@ -133,15 +134,19 @@
 				.attr('fill', function(d){
 					return colour(d['strike_rate']);
 				})
-			/*	.attr("data-toggle", "popover")
+				.attr("data-toggle", "popover")
 				.attr("title", function(d){
 					var notout_marker = "";
 					if(d['notouts'] > 0){
 						notout_marker = "*"
 					}
-					return d["batsman/runs"]+"("+d["batsman/ballsfaced"]+")"+notout_marker;
+					return "<b>"+d["batsman/runs"]+" ("+d["batsman/ballsfaced"]+" balls)"+notout_marker + "</b> vs "+d['opposition/short_name'];
+
 				})
-			*/
+				.attr("data-content", function(d){
+					return "<p>"+dateFormat(parseDate(d['match/startdate']))+"</p><p><b>Series</b>: "+d['series/name']+"</p><p><b>Location</b>: "+d['ground/small_name'] + "</p>" ;
+				})
+			
 				;
 			};
 			
@@ -171,8 +176,8 @@
 			var json_data;
 			function draw_graph(data){
 
-				d3.select("#from_date").html(data[0]['match/startdate']);
-				d3.select("#to_date").html(data[data.length-1]['match/startdate']);
+				d3.select("#from_date").html(dateFormat(parseDate(data[0]['match/startdate'])));
+				d3.select("#to_date").html(dateFormat(parseDate(data[data.length-1]['match/startdate'])));
 
 				domain_x = data.map(function(d, i){
 					return d['index'];
@@ -202,6 +207,20 @@
 					// selection to the function specified
 					.call(yAxis);
 
+	            var y_label = d3.select(".y.axis")
+	                .append("text")
+	                .attr('class', 'label')
+                .text("Runs scored")
+            		.style('font-size', '2.2em')
+                .attr("transform", "rotate(-90), translate(50, 10)");
+
+				// Call to enable the bootstrap popover plugin
+				// also popovers on svg elements are non trivial and they need
+				// a call with content and container separately specified
+				// http://stackoverflow.com/questions/13943582/why-doesnt-twitter-bootstrap-popover-work-with-svg-elements
+				$(function () {
+				  $('[data-toggle="popover"]').popover({trigger:"hover", content:"content", container:"body", html:true})
+				});
 
 
 			}
@@ -285,6 +304,7 @@
 
 				// Use the date range to filter the data for the main bar chart ! 
 			};
+
 
 	    </script>
 	</body>
