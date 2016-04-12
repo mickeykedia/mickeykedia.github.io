@@ -48,6 +48,12 @@
 		     	stroke-opacity: 0.5;
 		     }
 
+		     .y.axis line {
+		     	stroke:lightgrey;
+		     	opacity: 0.6;
+		     }
+
+		}
 
 	    </style>
 	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -86,11 +92,15 @@
 	    <!-- Bootstrap Core JavaScript -->
 	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	    <script>
+
+	    	var container_width = d3.select('body .container').style('width');
 	    	var margin = {top: 10, right: 10, bottom: 100, left: 40},
 	    		margin2 = {top: 430, right: 10, bottom: 20, left: 40},
-			    width = 960 - margin.left - margin.right,
+			    width = 1140 - margin.left - margin.right,
 			    height = 500 - margin.top - margin.bottom, 
-			    height2 = 500 - margin2.top - margin2.bottom;
+			    height2 = 500 - margin2.top - margin2.bottom, 
+			    // Height of svg element for the Legend
+			    height0 = 500 - margin2.top - margin2.bottom;
 
 			// Sample date time format 1989-12-18T00:00:00.000Z
 			var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
@@ -101,22 +111,23 @@
 			//    x2 = d3.time.scale().range([0, width]),
 			var x = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
 			    y = d3.scale.linear().range([height, 0]), 
-			    colour = d3.scale.linear().range(["lightblue","blue" ]);
+			    colour = d3.scale.linear().range(["beige", "red"]);
 
 			var x2 = d3.time.scale().range([0, width]);
 
 			var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(""),
 				xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
-			    yAxis = d3.svg.axis().scale(y).orient("left");
+			    yAxis = d3.svg.axis().scale(y).orient("left").tickSize(-width);
 
 			var brush = d3.svg.brush()
 							.x(x2)
 							.on("brush", brushed);
 
-			// this function is called by a .call function
-			// which passes the selection into the function
-			// as 'this'. That's why the function
-			// is adding attributes to 'this'
+			/* this function is called by a .call function
+			 which passes the selection into the function
+			 as 'this'. Thats why the function
+			 is adding attributes to 'this'
+			*/
 			var bars = function(){
 				this.attr('x', function(d, i){
 			    	return x(d['index']);
@@ -171,10 +182,16 @@
 			var context = svg.append("g")
 							.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
+			var legend = svg.append("g")
+							.attr("transform", "translate("+margin2.left + ","+margin2.top+")");
+
 			// Adding a rectange for the grid in the time scale below
 
 			var json_data;
 			function draw_graph(data){
+				$(function () {
+				  $('[data-toggle="popover"]').popover('destroy');
+				});
 
 				d3.select("#from_date").html(dateFormat(parseDate(data[0]['match/startdate'])));
 				d3.select("#to_date").html(dateFormat(parseDate(data[data.length-1]['match/startdate'])));
@@ -246,9 +263,11 @@
 					return d['batsman/runs']; 
 				}))]);
 
-				colour.domain([0, d3.max(data.map(function(d){
+				strike_rate_data = data.map(function(d){
 					return d['strike_rate'];
-				}))])
+				})
+
+				colour.domain([d3.min(strike_rate_data), d3.max(strike_rate_data)])
 				// Draws the upper graph
 				draw_graph(data);
 
@@ -284,6 +303,9 @@
 					.attr("x", 6)
 					.style("text-anchor", null);
 
+
+
+
 				var gbrush = context.append("g")
 								.attr("class", "brush")
 								.call(brush);
@@ -305,7 +327,6 @@
 				date_range = brush.empty() ? x2.domain() : brush.extent();
 
 				filtered_data = filter_data(json_data, date_range);
-				console.log(filtered_data);
 				draw_graph(filtered_data);
 
 				// Use the date range to filter the data for the main bar chart ! 
