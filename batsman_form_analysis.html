@@ -16,13 +16,6 @@
 			  font: 10px sans-serif;
 			}
 
-			.area {
-			  fill: none;
-			  stroke: steelblue;
-			  stroke-width: 3;
-			  clip-path: url(#clip);
-			}
-
 			.axis path,
 			.axis line {
 			  fill: none;
@@ -31,16 +24,36 @@
 			}
 
 			.brush .extent {
-			  stroke: #fff;
+			  stroke: #000;
 			  fill-opacity: .125;
 			  shape-rendering: crispEdges;
 			}
 		    .bar {
 		    	opacity: 0.9;
 		        stroke: none;
-		        fill: steelblue;
 		     }
 
+		     .grid-background {
+		     	fill: #ddd;
+		     }
+
+		     .grid line, 
+		     .grid path {
+		     	fill:none;
+		     	stroke: #fff;
+		     	shape-rendering: crispEdges;
+		     }
+
+		     .grid .minor .tick line {
+		     	stroke-opacity: 0.5;
+		     }
+
+		     .y.axis line {
+		     	stroke:lightgrey;
+		     	opacity: 0.6;
+		     }
+
+		}
 
 	    </style>
 	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -54,6 +67,21 @@
 		<!-- D3js CDN -->
 	    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
         <div class="container">
+        	<div class="page-header">
+        		<h1>Batsman Form Analysis <small>(Cricket)</small></h1>
+
+        	</div>	
+
+        	<div class="panel panel-default">
+        		<div class="panel-heading">
+			    	<h3 class="panel-title">Batsman: Sachin Tendulkar</h3>
+				</div>
+				<div class="panel-body">
+		        	<h4> <span id="from_date">From Date</span> To <span id="to_date">To Date</span></h4>
+
+				</div>
+			</div>
+        	<div class="graph"> </div>
         	<!-- All html elements go here. You can have multiple containers, and look -->
         	<!-- up class container-fluid if you want the container to span the entire page -->
 
@@ -64,40 +92,45 @@
 	    <!-- Bootstrap Core JavaScript -->
 	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	    <script>
+
+	    	var container_width = d3.select('body .container').style('width');
 	    	var margin = {top: 10, right: 10, bottom: 100, left: 40},
-			    margin2 = {top: 430, right: 10, bottom: 20, left: 40},
-			    width = 960 - margin.left - margin.right,
-			    height = 500 - margin.top - margin.bottom,
-			    height2 = 500 - margin2.top - margin2.bottom;
+	    		margin2 = {top: 430, right: 10, bottom: 20, left: 40},
+			    width = 1140 - margin.left - margin.right,
+			    height = 500 - margin.top - margin.bottom, 
+			    height2 = 500 - margin2.top - margin2.bottom, 
+			    // Height of svg element for the Legend
+			    height0 = 500 - margin2.top - margin2.bottom;
 
 			// Sample date time format 1989-12-18T00:00:00.000Z
 			var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
+			var dateFormat = d3.time.format("%d %b, %Y");
+
 			//var x = d3.time.scale().range([0, width]),
 			//    x2 = d3.time.scale().range([0, width]),
 			var x = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
-			    x2 = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
-			    y = d3.scale.linear().range([height, 0]),
-			    y2 = d3.scale.linear().range([height2, 0]);
+			    y = d3.scale.linear().range([height, 0]), 
+			    colour = d3.scale.linear().range(["beige", "blue"]);
 
-			var xAxis = d3.svg.axis().scale(x).orient("bottom"),
-			    xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
-			    yAxis = d3.svg.axis().scale(y).orient("left");
+			var x2 = d3.time.scale().range([0, width]);
 
-			// The selection which is being passed as an 
-			// argument to brush() here is passed through 
-			// the .call method we use to call this function later
+			var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(""),
+				xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
+			    yAxis = d3.svg.axis().scale(y).orient("left").tickSize(-width);
+
 			var brush = d3.svg.brush()
-			    .x(x2)
-			    .on("brush", brushed);
+							.x(x2)
+							.on("brush", brushed);
 
-			// this function is called by a .call function
-			// which passes the selection into the function
-			// as 'this'. That's why the function
-			// is adding attributes to 'this'
+			/* this function is called by a .call function
+			 which passes the selection into the function
+			 as 'this'. Thats why the function
+			 is adding attributes to 'this'
+			*/
 			var bars = function(){
 				this.attr('x', function(d, i){
-			    	return x(d['match/objectid']);
+			    	return x(d['index']);
 			   	})
 				.attr('width', function(d, i , data){
 					return x.rangeBand(); 
@@ -108,28 +141,28 @@
 				.attr('height', function(d){
 			    	return height - y(d['batsman/runs']); 
 
-				});
-			};
-			var bars2 = function(){
-				this.attr('x', function(d, i){
-					//console.log(x2(d['match/objectid']));
-					//console.log(d['match/objectid']);
-			    	return x2(d['match/objectid']);
-			   	})
-				.attr('width', function(d, i, data){
-					return x2.rangeBand(); 
+				})
+				.attr('fill', function(d){
+					return colour(d['strike_rate']);
+				})
+				.attr("data-toggle", "popover")
+				.attr("title", function(d){
+					var notout_marker = "";
+					if(d['notouts'] > 0){
+						notout_marker = "*"
+					}
+					return "<b>"+d["batsman/runs"]+" ("+d["batsman/ballsfaced"]+" balls)"+notout_marker + "</b>, Strike Rate: "+Math.round(d['strike_rate']*1000)/10;
 
 				})
-				.attr('y', function(d){
-					return y2(d['batsman/runs']);
+				.attr("data-content", function(d){
+					return  "<p> vs "+d['opposition/short_name']+" ("+dateFormat(parseDate(d['match/startdate']))+")</p><p><b>Series</b>: "+d['series/name']+"</p><p><b>Location</b>: "+d['ground/small_name'] + "</p>" ;
 				})
-				.attr('height', function(d){
-			    	return height2 - y2(d['batsman/runs']); 
-
-				});
+			
+				;
 			};
+			
 
-			var svg = d3.select("body").append("svg")
+			var svg = d3.select(".graph").append("svg")
 			    .attr("width", width + margin.left + margin.right)
 			    .attr("height", height + margin.top + margin.bottom);
 
@@ -143,36 +176,35 @@
 			    .attr("class", "focus")
 			    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
+			// Adding a separate g element which
+			// contains all the elements of the time selection
+			// axis below 
 			var context = svg.append("g")
-			    .attr("class", "context")
-			    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+							.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
-			d3.json("tendulkar_35320_odi.json", function(error, data) {
+			var legend = svg.append("g")
+							.attr("transform", "translate("+margin2.left + ","+margin2.top+")");
 
-				/*
-				x.domain(d3.extent(data.map(function(d) { 
-					return parseDate(d['match/startdate']); 
+			// Adding a rectange for the grid in the time scale below
 
-				})));
-				*/	
-
-
-				domain_x = data.map(function(d){
-					return d['match/objectid'];
+			var json_data;
+			function draw_graph(data){
+				$(function () {
+				  $('[data-toggle="popover"]').popover('destroy');
 				});
 
+				d3.select("#from_date").html(dateFormat(parseDate(data[0]['match/startdate'])));
+				d3.select("#to_date").html(dateFormat(parseDate(data[data.length-1]['match/startdate'])));
+
+				domain_x = data.map(function(d, i){
+					return d['index'];
+				});
 
 				x.domain(domain_x);
-				y.domain([0, d3.max(data.map(function(d) { 
-					return d['batsman/runs']; 
-				}))]);
 
-				x2.domain(x.domain());
-				/*
-				ordinalx2.domain(ordinalx.domain());
-				*/
-				y2.domain(y.domain());
+				// Removing all exisitng elements in focus 
+				focus.selectAll("*").remove();
+
 
 				focus.selectAll('.bar')
 					.data(data)
@@ -192,46 +224,113 @@
 					// selection to the function specified
 					.call(yAxis);
 
-				context.selectAll('.bar')
-					.data(data)
-						.enter()
-						.append("rect")
-						.attr("class", "bar")
-						.call(bars2); 
+	            var y_label = d3.select(".y.axis")
+	                .append("text")
+	                .attr('class', 'label')
+                .text("Runs scored")
+            		.style('font-size', '2.2em')
+                .attr("transform", "rotate(-90), translate(50, 10)");
+
+				// Call to enable the bootstrap popover plugin
+				// also popovers on svg elements are non trivial and they need
+				// a call with content and container separately specified
+				// http://stackoverflow.com/questions/13943582/why-doesnt-twitter-bootstrap-popover-work-with-svg-elements
+				$(function () {
+				  $('[data-toggle="popover"]').popover({trigger:"hover", content:"content", container:"body", html:true})
+				});
+
+
+			}
+
+			function add_strike_rate_to_data(inner_data){
+				for(i = 0; i < inner_data.length; i++){
+					inner_data[i]['strike_rate'] = inner_data[i]['batsman/runs']/inner_data[i]['batsman/ballsfaced'];
+					// Creating an index to number the matches
+					inner_data[i]['index'] = i+1;
+				}
+				return inner_data;
+			}
+
+			d3.json("tendulkar_35320_odi.json", function(error, data) {
+				data = add_strike_rate_to_data(data);
+				json_data = data;
+
+
+				// Y domain must only be set once 
+				// subsequent calls to draw_graph must not reset the 
+				// Y domain !
+				y.domain([0, d3.max(data.map(function(d) { 
+					return d['batsman/runs']; 
+				}))]);
+
+				strike_rate_data = data.map(function(d){
+					return d['strike_rate'];
+				})
+
+				colour.domain([d3.min(strike_rate_data), d3.max(strike_rate_data)])
+				// Draws the upper graph
+				draw_graph(data);
+
+				time_domain_x2 = d3.extent(data.map(function(d){
+					return parseDate(d['match/startdate']);
+				}));
+
+				x2.domain(time_domain_x2);
+				//draws the lower part of the graph (only called once)
+				context.append("rect")
+						.attr("class", "grid-background")
+						.attr("width", width)
+						.attr("height", height2);
+
+				// If we assign another axis here 
+				// similar to xAxis2 with no tick marks we can get a grid for the selector ! 
+				context.append("g")
+					.attr("class", "x grid")
+					.attr("transform", "translate(0, " +height2+")")
+					.call(d3.svg.axis()
+						.scale(x2)
+						.orient("bottom")
+						.ticks(d3.time.years)
+						.tickSize(-height2)
+						.tickFormat(""));
+
 
 				context.append("g")
 					.attr("class", "x axis")
-					.attr("transform", "translate(0," + height2 + ")")
-					// .call is a fancy way of passing the 
-					// selection to the function specified
-					.call(xAxis2);
+					.attr("transform", "translate(0, " +height2+")")
+					.call(xAxis2)
+					.selectAll("text")
+					.attr("x", 6)
+					.style("text-anchor", null);
 
-				context.append("g")
-					.attr("class", "x brush")
-					// .call is a fancy way of passing the 
-					// selection to the function specified
-					.call(brush)
-					.selectAll("rect")
-						.attr("y", -6)
-						.attr("height", height2 + 7);
+
+
+
+				var gbrush = context.append("g")
+								.attr("class", "brush")
+								.call(brush);
+
+				gbrush.selectAll("rect")
+					.attr("height", height2);
+
 			});
 
-			function brushed() {
-				domain = brush.empty() ? x2.domain() : brush.extent();
-				console.log(domain);
-				x.domain(domain);
-				// so focus.select(".area") has data bound to it and hence 
-				// when the .attr is passed the area generator 
-				// the data bound to the selection is passed to it 
-				// Just how generators work 
-				// The bound data is also available as a
-				// __data__ attribute in the selection 
-				// and that is how you could go about doing your own thing with the 
-				// data
-				focus.selectAll(".bar").call(bars);
-
-				focus.select(".x.axis").call(xAxis);
+			function filter_data(inner_data, date_range) {
+				filtered_data = inner_data.filter(function(d){
+					return parseDate(d['match/startdate']) < date_range[1] && parseDate(d['match/startdate']) > date_range[0];
+				});
+				return filtered_data;
 			}
+
+			
+			function brushed() {
+				date_range = brush.empty() ? x2.domain() : brush.extent();
+
+				filtered_data = filter_data(json_data, date_range);
+				draw_graph(filtered_data);
+
+				// Use the date range to filter the data for the main bar chart ! 
+			};
 
 
 	    </script>
