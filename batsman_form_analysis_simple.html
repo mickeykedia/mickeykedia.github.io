@@ -77,8 +77,8 @@
 			    	<h3 class="panel-title">Batsman: Sachin Tendulkar</h3>
 				</div>
 				<div class="panel-body">
-		        	<span class="label label-default" id="from_date">From Date:</span> <span>  To  </span>
-		        	<span class="label label-default" id="to_date">To Date:</span>
+		        	<h4> <span id="from_date">From Date</span> To <span id="to_date">To Date</span></h4>
+
 				</div>
 			</div>
         	<div class="graph"> </div>
@@ -111,7 +111,7 @@
 			//    x2 = d3.time.scale().range([0, width]),
 			var x = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
 			    y = d3.scale.linear().range([height, 0]), 
-			    colour = d3.scale.linear().range(["beige", "red"]);
+			    colour = d3.scale.linear().range(["beige", "blue"]);
 
 			var x2 = d3.time.scale().range([0, width]);
 

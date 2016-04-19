@@ -73,10 +73,10 @@
 			// Sample date time format 1989-12-18T00:00:00.000Z
 			var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
-			var x = d3.time.scale().range([0, width]),
-			    x2 = d3.time.scale().range([0, width]),
-		//	var x = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
-		//	    x2 = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
+			//var x = d3.time.scale().range([0, width]),
+			//    x2 = d3.time.scale().range([0, width]),
+			var x = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
+			    x2 = d3.scale.ordinal().rangeBands([0, width], 0.4, 0),
 			    y = d3.scale.linear().range([height, 0]),
 			    y2 = d3.scale.linear().range([height2, 0]);
 
@@ -96,11 +96,11 @@
 			// as 'this'. That's why the function
 			// is adding attributes to 'this'
 			var bars = function(){
-				this.attr('x', function(d){
-			    	return x(parseDate(d['match/startdate']));
+				this.attr('x', function(d, i){
+			    	return x(d['match/objectid']);
 			   	})
-				.attr('width', function(d){
-					return 2;
+				.attr('width', function(d, i , data){
+					return x.rangeBand(); 
 				})
 				.attr('y', function(d){
 					return y(d['batsman/runs']);
@@ -111,11 +111,14 @@
 				});
 			};
 			var bars2 = function(){
-				this.attr('x', function(d){
-			    	return x2(parseDate(d['match/startdate']));
+				this.attr('x', function(d, i){
+					//console.log(x2(d['match/objectid']));
+					//console.log(d['match/objectid']);
+			    	return x2(d['match/objectid']);
 			   	})
-				.attr('width', function(d){
-					return 2;
+				.attr('width', function(d, i, data){
+					return x2.rangeBand(); 
+
 				})
 				.attr('y', function(d){
 					return y2(d['batsman/runs']);
@@ -147,17 +150,20 @@
 
 			d3.json("tendulkar_35320_odi.json", function(error, data) {
 
-				
+				/*
 				x.domain(d3.extent(data.map(function(d) { 
 					return parseDate(d['match/startdate']); 
 
 				})));
-				/*	
+				*/	
 
-				x.domain(d3.map(data, function(d){
-					return parseDate(d['match/startdate']);
-				}));
-				*/
+
+				domain_x = data.map(function(d){
+					return d['match/objectid'];
+				});
+
+
+				x.domain(domain_x);
 				y.domain([0, d3.max(data.map(function(d) { 
 					return d['batsman/runs']; 
 				}))]);
@@ -211,7 +217,9 @@
 			});
 
 			function brushed() {
-				x.domain(brush.empty() ? x2.domain() : brush.extent());
+				domain = brush.empty() ? x2.domain() : brush.extent();
+				console.log(domain);
+				x.domain(domain);
 				// so focus.select(".area") has data bound to it and hence 
 				// when the .attr is passed the area generator 
 				// the data bound to the selection is passed to it 
