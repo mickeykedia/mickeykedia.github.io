@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
     <meta charset="utf-8">
@@ -9,14 +8,21 @@
     <meta name="description" content="Mayank Kedia's website">
     <meta name="author" content="Mayank Kedia">
 
-    <title>Mayank Krishna Kedia</title>
+    <title>Mayank Kedia</title>
 
-    <!-- Bootstrap Core CSS 
-    <link href="css/bootstrap.min.css" rel="stylesheet"> -->
-    <!-- Custom CSS -->
+    <!-- Bootstrap Core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS 
     <link href="css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400" type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+-->
+    <style>
+
+    .breadcrumb>li + li:before{
+        content:"|\00a0";
+    }
+    </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,44 +34,23 @@
 </head>
 
 <body>
-
-    <div class="wrapper">
-        <!-- An article tag is meant to be a self sufficient html part which 
-        can be distributed to different web pages independently (Don't understand completely, 
-        but I know this much till now -->
-        <article>
-            <header class="about">
-                <h1 class="about__title">Mayank Krishna Kedia</h1>
-                <h2 class="about__description">
-                    I solve problems. MS student at 
-                    <a href="https://www.usfca.edu/arts-sciences/graduate-programs/analytics" target="_blank">USF</a>
-                </h2>
-            </header>
-            <div class="contact">
-                <a href="http://www.twitter.com/moonsixpence" target="_blank">
-                    <i class="fa fa-twitter">
-                    </i>
-                </a>
-                <a href="http://www.github.com/mickeykedia" target="_blank">
-                    <i class="fa fa-github">
-                    </i>
-                </a>
-                <a href="http://www.linkedin.com/in/mayankkedia" target="_blank">
-                    <i class="fa fa-linkedin">
-                    </i>
-                </a>
-
-            </div>
-
-        </article>
+    <div class="container">
+        <h1> Mayank Kedia<small> </small></h1>
+        <ol class="breadcrumb">
+          <li><a href="active">Home</a></li>
+          <li><a href="https://moonsixpence.wordpress.com/">Blog</a></li>
+          <li class="https://github.com/mickeykedia/">Github</li>
+        </ol>
+          
     </div>
 
 
-    <!-- jQuery Version 1.11.1 -->
-    <script src="js/jquery.js"></script>
 
+    <!-- jQuery Version 1.12.3 -->
+    <script   src="https://code.jquery.com/jquery-1.12.3.min.js"   integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 
 </body>
 
