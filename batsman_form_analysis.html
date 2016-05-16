@@ -52,6 +52,10 @@
 		     	stroke:lightgrey;
 		     	opacity: 0.6;
 		     }
+			.breadcrumb>li + li:before{
+		        content:"|\00a0";
+		    }
+
 
 		}
 
@@ -67,21 +71,56 @@
 		<!-- D3js CDN -->
 	    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
         <div class="container">
+        	<div class="row">
         	<div class="page-header">
         		<h1>Batsman Form Analysis <small>(Cricket)</small></h1>
+            </div>
+            <ol class="breadcrumb">
+              <li>Mayank Kedia</li>
+              <li><a href="../">Home</a></li>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="../epl_twitter.html">EPL Twitter</a></li>
+                <li><a href="#">Driver Telematic Signatures</a></li>
+                <li><a href="#">Matrix Factorization</a></li>
+                <li><a href="../personal_search_vault.html">Search Vault</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="../election_charts.html">Election Charts</a></li>
+                <li><a href="">Batsman Form Analysis</a></li>
+                <li><a href="../mumbai_pop_map.html">Mumbai Population Density</a></li>
+                <li><a href="#">India Maps</a></li>
+              </ul>
 
-        	</div>	
+               </li>
+              <li><a href="https://moonsixpence.wordpress.com/">Blog</a></li>
+              <li><a href="https://github.com/mickeykedia/">Github</a></li>
+              <li><a href="https://linkedin.com/in/mayankkedia/">LinkedIn</a></li>
+              <li><a href="https://twitter.com/moonsixpence/">Twitter</a></li>
+            </ol>
 
-        	<div class="panel panel-default">
-        		<div class="panel-heading">
-			    	<h3 class="panel-title">Batsman: Sachin Tendulkar</h3>
-				</div>
-				<div class="panel-body">
-		        	<h4> <span id="from_date">From Date</span> To <span id="to_date">To Date</span></h4>
+        	<div class="col-md-12">
+		    	<h3>Sachin Tendulkar: <small id="from_date">From Date</small> <small>To </small><small id="to_date">To Date</small></h3>
 
-				</div>
 			</div>
         	<div class="graph"> </div>
+        	<div class="page-header">
+        	</div>
+        	<div class="col-md-12">
+		    	<h3>Motivation</h3>
+		    	<p>I wanted to make a graphical representation of the 'Form' of a batsman in Cricket. The idea was to visually see the form of a batsman over time, and possibly select opposition, venue etc.</p>
+		    	<h3>Details</h3>
+		    	This visualization has been implemented using D3.js. You can select a period in the scale above to see the form during a specific time period. 
+		    	<h3>Todo</h3>
+		    	<ul>
+		    		<li>Make the above chart responsive to the size of the page</li>
+		    		<li>Colour code tournaments to give a better sense of continuity within the chart</li>
+		    		<li>Allow filtering by venue, opposition</li>
+		    	</ul> 	
+		    	<h3><a href="https://github.com/mickeykedia/mickeykedia.github.io/blob/master/batsman_form_analysis.html">Code</a></h3>
+			</div>
+
+
+        </div>
         	<!-- All html elements go here. You can have multiple containers, and look -->
         	<!-- up class container-fluid if you want the container to span the entire page -->
 
@@ -96,7 +135,7 @@
 	    	var container_width = d3.select('body .container').style('width');
 	    	var margin = {top: 10, right: 10, bottom: 100, left: 40},
 	    		margin2 = {top: 430, right: 10, bottom: 20, left: 40},
-			    width = 1140 - margin.left - margin.right,
+			    width = 1120 - margin.left - margin.right,
 			    height = 500 - margin.top - margin.bottom, 
 			    height2 = 500 - margin2.top - margin2.bottom, 
 			    // Height of svg element for the Legend
@@ -160,9 +199,7 @@
 				})
 				.attr("data-content", function(d){
 					return  "<p> vs "+d['opposition/short_name']+" ("+dateFormat(parseDate(d['match/startdate']))+")</p><p><b>Series</b>: "+d['series/name']+"</p><p><b>Location</b>: "+d['ground/small_name'] + "</p>" ;
-				})
-			
-				;
+				});
 			};
 			
 
