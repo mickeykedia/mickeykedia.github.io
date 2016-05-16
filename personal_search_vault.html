@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Mayank Kedia's website">
+    <meta name="author" content="Mayank Kedia">
+
+    <title>Mayank Kedia</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS 
+    <link href="css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+    <style>
+
+    .breadcrumb>li + li:before{
+        content:"|\00a0";
+    }
+
+
+
+
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="page-header">
+                <h1>Personal Search Vault<small> </small></h1>
+            </div>
+            <ol class="breadcrumb">
+              <li>Mayank Kedia</li>
+              <li><a href="../">Home</a></li>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="../epl_twitter.html">EPL Twitter</a></li>
+                <li><a href="../election_charts.html">Election Charts</a></li>
+                <li><a href="">Search Vault</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="../driver_telematics.html">Driver Telematic Signatures</a></li>
+                <li><a href="../batsman_form_analysis.html">Batsman Form Analysis</a></li>
+                <li><a href="../mumbai_pop_map.html">Mumbai Population Density</a></li>
+                <li><a href="../india_maps.html">India Maps</a></li>
+              </ul>
+
+               </li>
+              <li><a href="https://moonsixpence.wordpress.com/">Blog</a></li>
+              <li><a href="https://github.com/mickeykedia/">Github</a></li>
+              <li><a href="https://linkedin.com/in/mayankkedia/">LinkedIn</a></li>
+              <li><a href="https://twitter.com/moonsixpence/">Twitter</a></li>
+            </ol>
+            <div class="col-md-6">
+                <a href="https://github.com/mickeykedia/personal-searchable-vault" class="thumbnail">
+                    <img src="personal-search-vault.png" alt="Personal Search Vault" height="10em">
+                </a>
+            </div>
+            <div class="col-md-6">
+                <h3>Motivation</h3>
+                <p>I wanted to build a search engine for myself which I could use to store information useful to me and which had an advanced search functionality</p>
+                <h3>Details</h3>
+                <p> The basic idea was to use an Elastic Search backend and store 'items' by specifying keywords at the time of saving. The web interface has been built using Flask (python app) and Bootstrap UI. The app is not up because I still have to write a simple security layer for the interface. Ideally I would want to make this into a chrome extension so that it is easy to use. The code is on <a href="https://github.com/mickeykedia/India-Maps">Github</a></p>
+
+            </div>
+        </div>
+
+  <!-- Default panel contents -->
+    </div>
+
+
+
+    <!-- jQuery Version 1.12.3 -->
+    <script   src="https://code.jquery.com/jquery-1.12.3.min.js"   integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>

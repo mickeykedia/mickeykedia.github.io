@@ -17,11 +17,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400" type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
     <style>
 
     .breadcrumb>li + li:before{
         content:"|\00a0";
     }
+
+
+
+
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -35,13 +40,70 @@
 
 <body>
     <div class="container">
+        <div class="row">
+        <div class="page-header">
         <h1> Mayank Kedia<small> </small></h1>
+        </div>
         <ol class="breadcrumb">
-          <li><a href="active">Home</a></li>
+          <li><a href="https://mickeykedia.github.io">Home</a></li>
+          <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="epl_twitter.html">EPL Twitter</a></li>
+            <li><a href="election_charts.html">Election Charts</a></li>
+            <li><a href="personal_search_vault.html">Search Vault</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="driver_telematics.html">Driver Telematic Signatures</a></li>
+            <li><a href="batsman_form_analysis.html">Batsman Form Analysis</a></li>
+            <li><a href="mumbai_pop_map.html">Mumbai Population Density</a></li>
+            <li><a href="india_maps.html">India Maps</a></li>
+          </ul>
+
+           </li>
           <li><a href="https://moonsixpence.wordpress.com/">Blog</a></li>
-          <li class="https://github.com/mickeykedia/">Github</li>
+          <li><a href="https://github.com/mickeykedia/">Github</a></li>
+          <li><a href="https://linkedin.com/in/mayankkedia/">LinkedIn</a></li>
+          <li><a href="https://twitter.com/moonsixpence/">Twitter</a></li>
         </ol>
-          
+
+  <!-- Default panel contents -->
+        <div class="col-xs-6 col-md-3">
+
+            <a href="epl_twitter.html" class="thumbnail">
+            <img src="epl-twitter-viz.png" alt="Visualization for Twitter during EPL" height="10em">
+                <div class="caption">
+                    <h5>EPL Twitter visualization</h5>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3">
+            <a href="election_charts.html" class="thumbnail">
+            <img src="election-charts.png" alt="Election charts image" height="10em">
+                <div class="caption">
+                    <h5>Election Charts for Indian Elections</h5>
+                    <p>Website hosted to show live election results during the 2014 General elections in India. Currently link to just the visualization</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3">
+            <a href="mumbai_pop_map.html" class="thumbnail">
+            <img src="mumbai-pop-map.png" alt="Mumbai population density" height="10em">
+                <div class="caption">
+                    <h5>Mumbai Population Density</h5>
+                    <p>Ward level population density map for Mumbai</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-3">
+            <a href="personal_search_vault.html" class="thumbnail">
+            <img src="personal-search-vault.png" alt="Personal Search Vault">
+                <div class="caption">
+                    <h5>Personal Search Vault</h5>
+                    <p>An elastic search backed personal vault for stuff I want to remember</p>
+                </div>
+            </a>
+        </div>
+
+        </div> 
     </div>
 
 

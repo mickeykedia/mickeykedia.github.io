@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+/* CSS goes here. */
+
+.subunit.IND {fill: #ddc;}
+.subunit.PAK {fill: #cdd;}
+.subunit.BGD {fill: #cdc;}
+.subunit.LKA {fill: #dcd;}
+.subunit-boundary {
+    fill: none;
+    stroke:#777;
+    stroke-dasharray:0.2,0.2;
+    stroke-linejoin:round;
+    
+}
+.place {
+    fill:grey;
+}
+
+.place-label {
+    fill:white;
+    font-size: 4px;
+}
+
+.subunit-label {
+  fill: #777;
+  fill-opacity: .5;
+  font-size: 20px;
+  font-weight: 300;
+  text-anchor: middle;
+}
+
+</style>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.js"></script>
+<script>
+
+    var width = 1060,
+        height = 600;
+
+    var svg = d3.select("body").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+
+    d3.json("india_map.json", function(error, ind) {
+        if (error) return console.error(error);
+
+        var subunits = topojson.feature(ind, ind.objects.subcontinent_subunits);
+        console.log(subunits);
+        //var projection = d3.geo.mercator();
+        var projection = d3.geo.albers()
+                            .rotate([-70, 0])
+                            .center([4, 5.5])
+                            .scale(1000)
+                           .clipAngle(90)
+                           .translate([height/2, width/2]);
+
+        var path = d3.geo.path()
+                        .projection(projection);
+
+        console.log(path);
+
+        svg.selectAll(".subunit")
+            .data(subunits.features)
+            .enter().append("path")
+            .attr("class", function(d) {return "subunit "+d.id})
+            .attr("d", path);
+
+        //console.log(ind.objects.subcontinent_subunits)
+
+        // Adding boundaries between countries 
+        /*
+        svg.append("path")
+           .datum(topojson.mesh(ind, ind.objects.subcontinent_subunits, 
+            function(a, b){ return a !== b && a.id !== "INX"}))
+           .attr("d", path)
+           .attr("class", "subunit-boundary");
+
+        */
+        // Adding points for the places
+        svg.append("path")
+           .datum(topojson.feature(ind, ind.objects.places))
+           .attr("d", path.pointRadius(1.5))
+           .attr("class", "place");
+
+        // Adding labels for the places
+        svg.selectAll(".place-label")
+            .data(topojson.feature(ind, ind.objects.places).features)
+           .enter().append("text")
+            .attr("class", "place-label")
+            .attr("transform", function(d){
+                return "translate("+projection(d.geometry.coordinates)+")";
+            })
+            .attr("dy", ".35em")
+            .text(function(d){ return d.properties.name; });
+
+
+        // Moving place labels to the right and left according to which side of the screen is it
+        svg.selectAll(".place-label")
+            .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 2 : -2; })
+            .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; });
+
+        // Adding labels for the Countries
+        svg.selectAll(".subunit-label")
+            .data(topojson.feature(ind, ind.objects.subcontinent_subunits).features)
+           .enter().append("text")
+            .attr("class", function(d){
+                return "subunit-label " + d.id;
+            })
+            .attr("transform", function(d){
+                return "translate(" + path.centroid(d) + ")";
+            })
+            .attr("dy", "0.35em")
+            .text(function(d){
+                return d.properties.name;
+            });
+
+    });
+
+</script>
