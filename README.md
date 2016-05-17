@@ -1,1 +1,3 @@
-Repository for a website to host visualizations I'm working on. 
+### Personal website
+
+Contains links to projects etc that I have worked on. 

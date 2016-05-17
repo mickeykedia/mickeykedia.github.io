@@ -23,8 +23,29 @@
     .breadcrumb>li + li:before{
         content:"|\00a0";
     }
+    @media only screen and (min-width : 768px) {
+       .flex-row.row {
+         display: flex;
+         flex-wrap: wrap;
+       }
+       .flex-row.row > [class*='col-'] {
+         display: flex;
+         flex-direction: column;
+       }
+    }
 
-
+    .flex-row .thumbnail,
+    .flex-row .caption {
+      flex:1 0 auto;
+      flex-direction:column;
+    }
+    .flex-text {
+      flex-grow:1
+    }
+    .flex-row img {
+      height:auto;
+      width:100%
+    }
 
 
     </style>
@@ -41,69 +62,96 @@
 <body>
     <div class="container">
         <div class="row">
-        <div class="page-header">
-        <h1> Mayank Kedia<small> </small></h1>
-        </div>
-        <ol class="breadcrumb">
-          <li><a href="https://mickeykedia.github.io">Home</a></li>
-          <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="epl_twitter.html">EPL Twitter</a></li>
-            <li><a href="election_charts.html">Election Charts</a></li>
-            <li><a href="personal_search_vault.html">Search Vault</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="driver_telematics.html">Driver Telematic Signatures</a></li>
-            <li><a href="batsman_form_analysis.html">Batsman Form Analysis</a></li>
-            <li><a href="mumbai_pop_map.html">Mumbai Population Density</a></li>
-            <li><a href="india_maps.html">India Maps</a></li>
-          </ul>
+            <div class="page-header">
+                <h1> Mayank Kedia<small> </small></h1>
+            </div>
+            <ol class="breadcrumb">
+              <li><a href="https://mickeykedia.github.io">Home</a></li>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="epl_twitter.html">EPL Twitter</a></li>
+                <li><a href="election_charts.html">Election Charts</a></li>
+                <li><a href="personal_search_vault.html">Search Vault</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="driver_telematics.html">Driver Telematic Signatures</a></li>
+                <li><a href="batsman_form_analysis.html">Batsman Form Analysis</a></li>
+                <li><a href="mumbai_pop_map.html">Mumbai Population Density</a></li>
+                <li><a href="india_maps.html">India Maps</a></li>
+              </ul>
 
-           </li>
-          <li><a href="https://moonsixpence.wordpress.com/">Blog</a></li>
-          <li><a href="https://github.com/mickeykedia/">Github</a></li>
-          <li><a href="https://linkedin.com/in/mayankkedia/">LinkedIn</a></li>
-          <li><a href="https://twitter.com/moonsixpence/">Twitter</a></li>
-        </ol>
+               </li>
+              <li><a href="https://moonsixpence.wordpress.com/">Blog</a></li>
+              <li><a href="https://github.com/mickeykedia/">Github</a></li>
+              <li><a href="https://linkedin.com/in/mayankkedia/">LinkedIn</a></li>
+              <li><a href="https://twitter.com/moonsixpence/">Twitter</a></li>
+            </ol>
 
-  <!-- Default panel contents -->
-        <div class="col-xs-6 col-md-3">
+        </div>
+      <!-- Default panel contents -->
+          <div class="flex-row row ">
+            <div class="col-xs-12 col-md-6">
+                <a href="epl_twitter.html" class="thumbnail same-row-1" >
+                    <div class="caption">
+                        <h5>EPL Twitter visualization</h5>
+                    </div>
+                    <img src="epl-twitter-viz.png" alt="Visualization for Twitter during EPL" >
 
-            <a href="epl_twitter.html" class="thumbnail">
-            <img src="epl-twitter-viz.png" alt="Visualization for Twitter during EPL" height="10em">
-                <div class="caption">
-                    <h5>EPL Twitter visualization</h5>
-                </div>
-            </a>
+                </a>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <a href="election_charts.html" class="thumbnail same-row-1" >
+                    <div class="caption">
+                        <h5>Election Charts for Indian Elections (2014)</h5>
+                    </div>
+                    <img src="election-charts.png" alt="Election charts image" >
+                </a>
+            </div>
         </div>
-        <div class="col-xs-6 col-md-3">
-            <a href="election_charts.html" class="thumbnail">
-            <img src="election-charts.png" alt="Election charts image" height="10em">
-                <div class="caption">
-                    <h5>Election Charts for Indian Elections</h5>
-                    <p>Website hosted to show live election results during the 2014 General elections in India. Currently link to just the visualization</p>
-                </div>
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3">
-            <a href="mumbai_pop_map.html" class="thumbnail">
-            <img src="mumbai-pop-map.png" alt="Mumbai population density" height="10em">
-                <div class="caption">
-                    <h5>Mumbai Population Density</h5>
-                    <p>Ward level population density map for Mumbai</p>
-                </div>
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3">
-            <a href="personal_search_vault.html" class="thumbnail">
-            <img src="personal-search-vault.png" alt="Personal Search Vault">
-                <div class="caption">
-                    <h5>Personal Search Vault</h5>
-                    <p>An elastic search backed personal vault for stuff I want to remember</p>
-                </div>
-            </a>
-        </div>
-
+        <div class="flex-row row">
+            <div class="col-xs-12 col-md-6">
+                <a href="batsman_form_analysis.html" class="thumbnail">
+                    <div class="caption">
+                        <h5>Batsman Form Analysis (Cricket)</h5>
+                    </div>
+                    <img src="batsman_form_analysis.png" alt="Visualization of the form of a batsman during his career">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="personal_search_vault.html" class="thumbnail">
+                    <div class="caption">
+                        <h5>Personal Search Vault</h5>
+                    </div>
+                    <img src="personal-search-vault.png" alt="Personal Search Vault">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="mumbai_pop_map.html" class="thumbnail" >
+                    <div class="caption">
+                        <h5>Mumbai Population Density</h5>
+                    </div>
+                    <img src="mumbai-pop-map.png" alt="Mumbai population density" >
+                </a>
+            </div>
         </div> 
+        <div class="flex-row row">
+            <div class="col-xs-6 col-md-3">
+                <a href="india_maps.html" class="thumbnail">
+                    <div class="caption">
+                        <h5>India Maps</h5>
+                    </div>
+                    <img src="india_map.png" alt="India Maps">
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="driver_telematics.html" class="thumbnail">
+                    <div class="caption">
+                        <h5>Driver Telematic Signature</h5>
+                    </div>
+                    <img src="https://kaggle2.blob.core.windows.net/competitions/kaggle/4031/media/axa_trip.png" alt="visualization of telematic data">
+                </a>
+            </div>
+        </div> 
+
     </div>
 
 
@@ -112,6 +160,9 @@
     <script   src="https://code.jquery.com/jquery-1.12.3.min.js"   integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ="   crossorigin="anonymous"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script>
+
+    </script>
 
 
 </body>
